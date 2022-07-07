@@ -1,0 +1,11 @@
+venv
+/*/*/__pycache__
+/*/*/.pytest_cache
+backend/tests/__pycache__/
+**/**/__pycache__/
+**/__pycache__
+backups/
+replicas/
+db.csv
+figs
+logs
