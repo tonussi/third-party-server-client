@@ -103,7 +103,7 @@ class ArangoDataBaseSetup(object):
 
 @click.command()
 @click.option("--address",       default="localhost", help="Set server address")
-@click.option("--port",          default=8529,        help="Set server port")
+@click.option("--port",          default=8000,        help="Set server port")
 @click.option("--bytes_size",    default=128,         help="Set the payload size in number of bytes")
 @click.option("--read_rate",     default=50,          help="Set the reading rate from 0 to 100 percent")
 @click.option("--n_processes",   default=1,           help="Set number of client processes")
