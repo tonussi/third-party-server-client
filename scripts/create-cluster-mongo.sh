@@ -7,8 +7,15 @@ kubectl apply -f k8s/mongo/mongo-namespace.yml
 kubectl apply -f k8s/mongo/mongo-secret.yml
 kubectl apply -f k8s/mongo/mongo.yml
 kubectl apply -f k8s/mongo/mongo-configmap.yml
-kubectl apply -f k8s/mongo/mongo-express.yml
 kubectl apply -f k8s/mongo/mongo-ingress.yml
+kubectl apply -f k8s/mongo/mongo-express.yml
+
+kubectl delete -f k8s/mongo/mongo-namespace.yml
+kubectl delete -f k8s/mongo/mongo-secret.yml
+kubectl delete -f k8s/mongo/mongo.yml
+kubectl delete -f k8s/mongo/mongo-configmap.yml
+kubectl delete -f k8s/mongo/mongo-express.yml
+kubectl delete -f k8s/mongo/mongo-ingress.yml
 
 kubectl get po -n kube-system
 kubectl get cm -n mongodb-namespace

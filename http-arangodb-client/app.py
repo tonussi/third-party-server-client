@@ -4,9 +4,9 @@ import time
 from multiprocessing import Process
 from random import randrange
 from string import ascii_uppercase
-
+import requests
 import click
-
+import json
 from models.simple_http_log_client import (SimpleHttpLogClientGet,
                                            SimpleHttpLogClientPost)
 
@@ -66,6 +66,7 @@ class StressGenerator(Process):
     def _set_priority(self):
         self.daemon = True
 
+
 class StressGeneratorLogger(StressGenerator):
     def _write_work(self):
         bytes_size = self.arguments["bytes_size"]
@@ -86,17 +87,31 @@ class StressGeneratorLogger(StressGenerator):
         parent = psutil.Process()
         parent.nice(0)
 
+class ArangoDataBaseSetup(object):
+    def __init__(self, address, port) -> None:
+        self.api_url = f"http://{address}:{port}"
+    def create_collection(self, name):
+        payload = json.dumps({
+            "name": name
+        })
+        headers = {
+            'Authorization': 'Basic cm9vdDpyb290cGFzc3dvcmQ=',
+            'Content-Type': 'application/json'
+        }
+        requests.request("POST", f"{self.api_url}/_api/collection", headers=headers, data=payload)
 
 
 @click.command()
-@click.option("--address",             default="localhost", help="Set server address")
-@click.option("--port",                default=8000,        help="Set server port")
-@click.option("--bytes_size",          default=128,         help="Set the payload size in number of bytes")
-@click.option("--read_rate",           default=50,          help="Set the reading rate from 0 to 100 percent")
-@click.option("--n_processes",         default=1,           help="Set number of client processes")
-@click.option("--thinking_time",       default=0.2,         help="Set thinking time between requests")
-@click.option("--duration",            default=1.5,         help="Set duration in seconds")
+@click.option("--address",       default="localhost", help="Set server address")
+@click.option("--port",          default=8529,        help="Set server port")
+@click.option("--bytes_size",    default=128,         help="Set the payload size in number of bytes")
+@click.option("--read_rate",     default=50,          help="Set the reading rate from 0 to 100 percent")
+@click.option("--n_processes",   default=1,           help="Set number of client processes")
+@click.option("--thinking_time", default=0.2,         help="Set thinking time between requests")
+@click.option("--duration",      default=1.5,         help="Set duration in seconds")
 def hello(**kwargs):
+    ArangoDataBaseSetup(kwargs["address"], kwargs["port"]).create_collection("inserts")
+
     processes = []
 
     processes_count = kwargs["n_processes"]
