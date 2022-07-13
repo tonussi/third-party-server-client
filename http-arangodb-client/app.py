@@ -51,11 +51,11 @@ class StressGenerator(Process):
         bytes_size = self.arguments["bytes_size"]
         random_bytes_string_format = self._random_string(bytes_size)
         encode_bytes_as_base64 = random_bytes_string_format.encode("utf-8")
-        self.do_post_request.perform(encode_bytes_as_base64)
+        print(self.do_post_request.perform(encode_bytes_as_base64).text)
 
     def _read_work(self, iteration_index):
         line_number = randrange(iteration_index << 9)
-        self.do_get_request.perform(line_number=line_number)
+        print(self.do_get_request.perform(line_number=line_number).text)
 
     def _random_string(self, bytes_size):
         random_bytes_string_format = ""
@@ -106,7 +106,7 @@ class ArangoDataBaseSetup(object):
 @click.option("--port",          default=8000,        help="Set server port")
 @click.option("--bytes_size",    default=128,         help="Set the payload size in number of bytes")
 @click.option("--read_rate",     default=50,          help="Set the reading rate from 0 to 100 percent")
-@click.option("--n_processes",   default=1,           help="Set number of client processes")
+@click.option("--n_processes",   default=4,           help="Set number of client processes")
 @click.option("--thinking_time", default=0.2,         help="Set thinking time between requests")
 @click.option("--duration",      default=1.5,         help="Set duration in seconds")
 def hello(**kwargs):
@@ -116,8 +116,8 @@ def hello(**kwargs):
 
     processes_count = kwargs["n_processes"]
 
-    sgl = StressGeneratorLogger(**kwargs)
-    processes.append(sgl)
+    # sgl = StressGeneratorLogger(**kwargs)
+    # processes.append(sgl)
 
     for _ in range(processes_count - 1):
         processes.append(StressGenerator(**kwargs))
